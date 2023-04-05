@@ -5,10 +5,23 @@ from wsgiref.simple_server import make_server
 
 import falcon
 
+#desde aqui la conexion a la base de datos
+import mysql.connector
 
-# Falcon sigue el estilo arquitectónico REST, lo que significa (entre
-# otras cosas) que piensas en términos de recursos y transiciones de estado,
-# que se asignan a verbos HTTP.
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="12345678",
+  database="baserimelda"
+)
+
+mycursor = mydb.cursor()
+#hasta aqui la conexion a la base de datos
+
+
+
+
+#crea la clase ThingResourd, define el metodo on_get y on_pot
 class ThingsResource:
     def on_get(self, req, resp):
         """Handles GET requests"""
@@ -25,16 +38,50 @@ class ThingsResource:
         resp.text = (
             'metodo post prueba'
         )
+#desde aqui creamos el formulario de la pagina
+#ide=13
+#articulo="fosforo"
 class CosasLiz:
     def on_get(self, req, resp):
         """Handles GET requests"""
+        #cantidad = int(req.get_param("cantidad")) or 2
         resp.status = falcon.HTTP_200  # This is the default status
         resp.content_type = falcon.MEDIA_HTML  # Default is JSON, so override
         #resp.cookies.add('nombre1', 'valor1')
         resp.text = (
-            '<b>cosas de liz</b>'
-        )       
+            '<form method="post" action="">'
+            '<input type="text" placeholder="Introducir id articulo" name="id" value=""/>'
+            '<input type="text" placeholder="Introduce articulo" name="articulo" value=""/>'
+            '<input type="submit" value="Enviar dato" />'
+            '</form>'
+        )  
+      
+    def on_post(self, req, resp):   
+        resp.media = {
+            'params': req.params,
+            'media': req.media,
+        }
+        #ide=input[1].get('value')
+        #articulo=input[2].get('value')
+        sql = "INSERT INTO articulos(idarticulos, articuloscol) VALUES (%s, %s)"
+        val = (req.media["id"], req.media["articulo"])      
+        mycursor.execute(sql,val)
+        mydb.commit()
+        #ide=ide + 1
+        #print(dir(req.media))
+        #mycursor.execute("SELECT * FROM articulos")
 
+        #myresult = mycursor.fetchall(cantidad)
+        
+        
+        #var = "{ ["
+        #for x in myresult:
+         #   var+=f'{{"id":{x[0]},"producto":"{x[1]}"}},'
+        #resp.text = var+']}'
+            
+               
+#hasta aqui formulario        
+        
 # Los recursos están representados por instancias de clase de larga duración.
 things = ThingsResource() #creando el objeto things
 
@@ -44,7 +91,7 @@ app = falcon.App()
 
 app.add_route('/rimelda', things)
 
-app.add_route('/cosasliz', cosaliz)
+app.add_route('/formHtml', cosaliz)
 
 if __name__ == '__main__':
     with make_server('', 8000, app) as httpd:
