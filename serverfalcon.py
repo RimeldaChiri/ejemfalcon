@@ -1,6 +1,7 @@
 # examples/things.py
 
 # ¡Vamos a empezar esta fiesta!
+# PRACTICA DE GITHUB/FORMULARIO/BASE DE DATOS
 from wsgiref.simple_server import make_server
 
 import falcon
