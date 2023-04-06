@@ -19,7 +19,10 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 #hasta aqui la conexion a la base de datos
 
+#para leer un archivo
 
+
+#fin codigo para leer un archivo
 
 
 #crea la clase ThingResourd, define el metodo on_get y on_pot
@@ -49,14 +52,10 @@ class CosasLiz:
         resp.status = falcon.HTTP_200  # This is the default status
         resp.content_type = falcon.MEDIA_HTML  # Default is JSON, so override
         #resp.cookies.add('nombre1', 'valor1')
-        resp.text = (
-            '<form method="post" action="">'
-            '<input type="text" placeholder="Introducir id articulo" name="id" value=""/>'
-            '<input type="text" placeholder="Introduce articulo" name="articulo" value=""/>'
-            '<input type="submit" value="Enviar dato" />'
-            '</form>'
-        )  
-      
+        archivo = open("formulario2.html")
+        resp.text = archivo.read()
+        archivo.close()
+             
     def on_post(self, req, resp):   
         resp.media = {
             'params': req.params,
