@@ -1,28 +1,27 @@
-#class almacenes:
+from dao.conexiondb import mydb
 
-import mysql.connector
-
-mydb = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="12345678",
-  database = "baserimelda"
-  )
-
-mycursor = mydb.cursor()
 def EliminarAlmacen(id):
         sql = "DELETE FROM ALMACENES WHERE ID ="+str(id)
+        mycursor = mydb.cursor()
         mycursor.execute(sql)
         mydb.commit()
 
 def RegistrarAlmacen(id,almacen,ubicacion):
         sql = "INSERT  INTO ALMACENES(ID,ALMACEN,UBICACION) VALUES (%s,%s,%s)"
         val = (id,almacen,ubicacion)
-        mycursor.execute(sql,val)
-        mydb.commit() 
-def ModificarAlmacen(id,nombres,ci):    
-        sql = "UPDATE  ALMACENES SET ALMACEN=%s,UBICACION=%s WHERE ID="+str(id)
-        val = (almacen,ubicacion)
+        mycursor = mydb.cursor()
         mycursor.execute(sql,val)
         mydb.commit() 
 
+def ModificarAlmacen(id,almacen,ubicacion):    
+        sql = "UPDATE  ALMACENES SET ALMACEN=%s,UBICACION=%s WHERE ID="+str(id)
+        val = (almacen,ubicacion)
+        mycursor = mydb.cursor()
+        mycursor.execute(sql,val)
+        mydb.commit() 
+
+def ListarAll(offset, limit):
+        mycursor = mydb.cursor()
+        mycursor.execute(f"SELECT * FROM ALMACENES limit {limit} offset {offset}")
+        # mycursor.execute(f"select id, name, description, fechaalta from role order by id OFFSET {inicio} ROWS FETCH NEXT {limit} ROWS ONLY")
+        return mycursor.fetchall()
